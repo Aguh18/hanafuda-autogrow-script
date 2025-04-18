@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import configparser
 
-# ASCII art to display on startup
+
 ASCII_ART = """
   ___        _            _                    
  / _ \\      | |          | |                   
@@ -16,14 +16,23 @@ ASCII_ART = """
                                      | |       
                                      |_|       
 """
+CREDIT = """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧑‍💻 Created by        : Aguhh
+🌐 GitHub            : https://github.com/Aguh18
+💬 Join Telegram     : https://t.me/+V_JQTTMVZVU3YTM9
+🔗 LinkedIn          : https://www.linkedin.com/in/asep-teguh-hidayat/
+🎮 Join Discord      : https://discord.gg/wjxASXVD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
 
-# Function to load configuration from text file
+
 def load_config_from_file(file_path="config.txt"):
     config = configparser.ConfigParser()
     config.read(file_path)
     return config['DEFAULT'] if 'DEFAULT' in config else {}
 
-# Load configuration from environment variables or text file
+
 def get_config():
     config_file = load_config_from_file()
     
@@ -35,14 +44,13 @@ def get_config():
         'minute': int(os.getenv('MINUTE', config_file.get('MINUTE', '35')))
     }
 
-# Retrieve configuration
+
 config = get_config()
 refresh_token = config['refresh_token']
 telegram_bot_token = config['telegram_bot_token']
 telegram_chat_id = config['telegram_chat_id']
 minute = config['minute']
 
-# Validate configuration
 if not refresh_token:
     print("Error: Refresh token not found. Set FIREBASE_REFRESH_TOKEN in environment variables or config.txt.")
     exit()
@@ -50,7 +58,7 @@ if not telegram_bot_token or not telegram_chat_id:
     print("Error: Telegram Bot Token or Chat ID not found. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in environment variables or config.txt.")
     exit()
 
-# Function to send notification to private Telegram chat
+
 def send_telegram_message(message):
     telegram_url = f"https://api.telegram.org/bot{telegram_bot_token}/sendMessage"
     payload = {
@@ -67,19 +75,19 @@ def send_telegram_message(message):
     except Exception as e:
         print("Error sending Telegram notification:", str(e))
 
-# Main function for autologin and Grow All
+
 def run_hanafuda_task():
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"\n[{timestamp}] Running Hanafuda task...")
 
-    # Firebase endpoint to exchange refresh_token for id_token
+
     refresh_url = "https://securetoken.googleapis.com/v1/token?key=AIzaSyDipzN0VRfTPnMGhQ5PSzO27Cxm3DohJGY"
     payload = {
         "grant_type": "refresh_token",
         "refresh_token": refresh_token
     }
 
-    # Send request to obtain id_token
+
     try:
         response = requests.post(refresh_url, json=payload)
         if response.status_code == 200:
@@ -107,16 +115,14 @@ def run_hanafuda_task():
         send_telegram_message(error_message)
         return
 
-    # Headers for GraphQL authentication
+ 
     headers = {
         "Authorization": f"Bearer {id_token}",
         "Content-Type": "application/json"
     }
 
-    # Hanafuda GraphQL endpoint
     graphql_url = "https://hanafuda-backend-app-520478841386.us-central1.run.app/graphql"
 
-    # GraphQL mutation for Grow All
     grow_payload = {
         "query": """
             mutation ExecuteGrowAction($withAll: Boolean) {
@@ -132,7 +138,7 @@ def run_hanafuda_task():
         "operationName": "ExecuteGrowAction"
     }
 
-    # Send GraphQL request for Grow All
+  
     try:
         response = requests.post(graphql_url, headers=headers, json=grow_payload)
         if response.status_code == 200:
@@ -161,17 +167,18 @@ def run_hanafuda_task():
         print(error_message)
         send_telegram_message(error_message)
 
-# Print ASCII art and initial notification
+
 print(ASCII_ART)
-# Schedule task to run every hour at the specified minute
+print(CREDIT)
 schedule.every().hour.at(f":{minute:02d}").do(run_hanafuda_task)
 
-# Send initial notification that the script has started
+
+
 start_message = f"🚀 *[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Hanafuda Script Started*\nWill run every hour at minute {minute:02d}"
 print(start_message)
 send_telegram_message(start_message)
 
-# Loop to run the scheduler
+
 while True:
     schedule.run_pending()
-    time.sleep(60)  # Check every minute
+    time.sleep(60) 
