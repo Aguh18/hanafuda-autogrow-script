@@ -1,91 +1,123 @@
-🌸 Hanafuda Auto Login & Grow Script
-This Python script automates logging into Hanafuda, retrieves an id_token using a refresh_token, and performs the Grow All action periodically every hour at a specified minute. Result notifications are sent to a private Telegram chat via a bot.
-✨ Features
+# Hanafuda Auto Grow
 
-Automatic Login: Uses Firebase refresh_token for seamless authentication.
-Grow All Execution: Performs the GraphQL mutation Grow All action.
-Telegram Notifications: Sends success or failure notifications to a private Telegram chat.
-Customizable Schedule: Configurable to run every hour at a specified minute (default: 35th minute).
+🌸 **Hanafuda Auto Login & Grow Script**  
+This Python script automates logging into Hanafuda, retrieves an `id_token` using a `refresh_token`, and performs the **Grow All** action periodically every hour at a specified minute. Result notifications are sent to a private Telegram chat via a bot.
 
-📦 Requirements
+✨ **Features**  
+- Automatic login to Hanafuda.
+- Periodic "Grow All" action.
+- Telegram notifications for script results.
 
-Python 3.7 or higher
-Required Python packages:pip install requests schedule
+## Requirements
+- Python 3.7 or higher
+- `requests` and `schedule` Python libraries
 
+## Installation
 
-
-🛠 Setup
-
-Clone the Repository:
+### Clone the Repository
+```sh
 git clone https://github.com/your-username/hanafuda-auto-script.git
 cd hanafuda-auto-script
+```
 
-
-Install Dependencies:
+### Install Dependencies
+Install the required Python libraries:
+```sh
 pip install requests schedule
+```
 
+### Configure the Script
+Edit the `config.txt` file to include your credentials and settings.
 
-Configure the Script:The script retrieves configuration from environment variables or a config.txt file. You need to provide:
+#### Linux
+```sh
+nano config.txt
+```
+Use the `nano` editor to edit the file. Save by pressing `Ctrl+O`, then `Enter`, and exit with `Ctrl+X`.
 
-FIREBASE_REFRESH_TOKEN: Obtain from Hanafuda login.
-TELEGRAM_BOT_TOKEN: Your Telegram bot token (e.g., 7872772160:AAGB8WAJAYsfdqGs8Fooo2re5j1gb8WImIw).
-TELEGRAM_CHAT_ID: Your Telegram chat ID (contact your provider for this).
-MINUTE: The minute of each hour to run the script (e.g., 35 for the 35th minute).
+#### Windows
+```powershell
+notepad config.txt
+```
+Use Notepad to edit the file. Save and close the window when done.
 
-Option 1: Environment Variables (Recommended):
-export FIREBASE_REFRESH_TOKEN="your_refresh_token"
-export TELEGRAM_BOT_TOKEN="7872772160:AAGB8WAJAYsfdqGs8Fooo2re5j1gb8WImIw"
-export TELEGRAM_CHAT_ID="your_chat_id"
-export MINUTE=35
-
-Option 2: Config File:Create a config.txt file in the same directory as the script with the following format:
+#### Configuration Example
+Edit `config.txt` with the following format:
+```ini
 [DEFAULT]
-REFRESH_TOKEN=your_refresh_token
-TELEGRAM_BOT_TOKEN=7872772160:AAGB8WAJAYsfdqGs8Fooo2re5j1gb8WImIw
-TELEGRAM_CHAT_ID=your_chat_id
-MINUTE=35
+REFRESH_TOKEN=your-refresh_token
+TELEGRAM_BOT_TOKEN=your-bot-token
+TELEGRAM_CHAT_ID=your-telegram-chat-id
+MINUTE=23
+```
+- `REFRESH_TOKEN`: Your Hanafuda refresh token.
+- `TELEGRAM_BOT_TOKEN`: Your Telegram bot token.
+- `TELEGRAM_CHAT_ID`: Your Telegram chat ID.
+- `MINUTE`: The minute of each hour when the script runs (e.g., `23` for 23rd minute).
 
+### Obtain the Refresh Token
+1. Open the Hanafuda website at [https://hanafuda.hana.network/dashboard](https://hanafuda.hana.network/dashboard).
+2. Log in to your account.
+3. Open the browser's **Developer Tools**:
+   - **Linux/Windows**: Press `F12` or `Ctrl+Shift+I`.
+   - Navigate to the **Application** tab.
+   - Find the **Storage** or **Local Storage** section, then locate the `refresh_token`.
+4. Copy the `refresh_token` and paste it into `config.txt`.
 
+![Refresh Token Example](./refreshtoken.png)
 
-🚀 Usage
+### Obtain the Telegram Bot Token
+1. Open Telegram and search for the bot with the username <span style="color: blue;">@BotFather</span>.
+2. Start a chat with <span style="color: blue;">@BotFather</span> and send the command <span style="color: gray;">/newbot</span>.
+3. Follow the instructions to create a new bot and receive a bot token.
+4. Copy the bot token and paste it into `config.txt`.
 
-Run the Script:
-python hanafuda_script.py
+![Telegram Bot Token Example](./telegram.png)
 
-The script will:
+### Obtain the Telegram Chat ID
+1. Open Telegram and send a random message to the bot you just created.
+2. Open a browser and navigate to:
+   ```
+   https://api.telegram.org/bot<your-bot-token>/getUpdates
+   ```
+   Replace `<your-bot-token>` with the bot token you obtained.
+3. In the response, locate the `chat.id` field (e.g., a number like `123456789`).
+4. Copy the `chat.id` and paste it into `config.txt`.
 
-Display an ASCII art banner.
-Send an initial Telegram notification indicating the script has started.
-Run the Grow All task every hour at the specified minute (e.g., :35).
-Send Telegram notifications for login success/failure and Grow All results.
+![Chat ID Example](./chatid.png)
 
+### Update config.txt
+Ensure all obtained values (`REFRESH_TOKEN`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`) are correctly entered in `config.txt`.
 
-Keep the Script Running:To ensure the script runs continuously, use a tool like nohup, screen, or tmux:
-nohup python hanafuda_script.py &
+## Run the Script
 
+### Linux
+```sh
+python3 main.py
+```
+Run the script using the `python3` command.
 
-Monitor Output:
+### Windows
+```powershell
+python main.py
+```
+Run the script using the `python` command (ensure Python is added to your system PATH).
 
-Check the console for debug logs and error messages.
-Verify Telegram notifications for task results.
+### Script Output
+When the script runs successfully, you will receive a notification in your Telegram chat, as shown below:
 
+![Script Result Example](./result.png)
 
-
-🐛 Troubleshooting
-
-Config Error: Ensure config.txt has a [DEFAULT] section or environment variables are set correctly.
-Scheduler Not Triggering: Verify the MINUTE value is between 0-59 and the system clock is correct.
-API Errors: Check the validity of the refresh_token by logging in again at Hanafuda.
-Telegram Issues: Confirm the TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are correct.
-
-For detailed logs, enable debug prints in the script (already included in the provided version).
-📝 Notes
-
-The script requires a stable internet connection to communicate with Firebase and Hanafuda APIs.
-Keep your refresh_token secure and do not share it publicly.
-Contact your Telegram chat ID provider (e.g., "Teguh") if you encounter issues with notifications.
-
-🤝 Contributing
-Feel free to submit issues or pull requests to improve the script. Ensure any changes are well-documented and tested.
-📜 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Notes for Linux vs. Windows
+- **Python Command**:
+  - **Linux**: Use `python3` to ensure the correct Python version is used.
+  - **Windows**: Use `python` (or `py` if multiple Python versions are installed). Ensure Python is in your PATH (`C:\PythonXX` or similar).
+- **Editing config.txt**:
+  - **Linux**: Use terminal-based editors like `nano` or `vim`.
+  - **Windows**: Use GUI-based editors like Notepad or Notepad++.
+- **File Paths**:
+  - **Linux**: Use forward slashes (`/`), e.g., `images/refreshtoken.png`.
+  - **Windows**: Forward slashes work in Markdown, but in scripts, you may need backslashes (`\`) or raw strings for file paths.
+- **Terminal/PowerShell**:
+  - **Linux**: Run commands in a terminal (e.g., Bash).
+  - **Windows**: Use Command Prompt or PowerShell.
