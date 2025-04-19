@@ -108,16 +108,12 @@ When the script runs successfully, you will receive a notification in your Teleg
 
 ![Script Result Example](./result.png)
 
-## Notes for Linux vs. Windows
-- **Python Command**:
-  - **Linux**: Use `python3` to ensure the correct Python version is used.
-  - **Windows**: Use `python` (or `py` if multiple Python versions are installed). Ensure Python is in your PATH (`C:\PythonXX` or similar).
-- **Editing config.txt**:
-  - **Linux**: Use terminal-based editors like `nano` or `vim`.
-  - **Windows**: Use GUI-based editors like Notepad or Notepad++.
-- **File Paths**:
-  - **Linux**: Use forward slashes (`/`), e.g., `images/refreshtoken.png`.
-  - **Windows**: Forward slashes work in Markdown, but in scripts, you may need backslashes (`\`) or raw strings for file paths.
-- **Terminal/PowerShell**:
-  - **Linux**: Run commands in a terminal (e.g., Bash).
-  - **Windows**: Use Command Prompt or PowerShell.
+## Disclaimer
+This bot is for educational purposes only. Use at your own risk. The creators of this bot are not responsible for any loss of funds.
+
+## License
+MIT License
+
+## Join Our Community
+Telegram: https://t.me/+V_JQTTMVZVU3YTM9
+
